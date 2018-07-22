@@ -72,13 +72,19 @@ var Marlinspike = (function () {
   }, {
     key: 'loadModels',
     value: function loadModels() {
+      var _this = this;
+
       this.sails.log.debug('marlinspike (' + this.name + '): loading Models...');
       try {
-        var models = (0, _requireAll2['default'])({
-          dirname: _path2['default'].resolve(this.hookPath, '../../models'),
-          filter: /(.+)\.js$/
-        });
-        this.mergeEntities('models', models);
+        (function () {
+          var models = (0, _requireAll2['default'])({
+            dirname: _path2['default'].resolve(_this.hookPath, '../../models'),
+            filter: /(.+)\.js$/
+          });
+          setTimeout(function () {
+            _this.mergeEntities('models', models);
+          });
+        })();
       } catch (e) {
         this.sails.log.warn('marlinspike (' + this.name + '): no Models found. skipping');
       }
@@ -102,7 +108,7 @@ var Marlinspike = (function () {
   }, {
     key: 'registerActions',
     value: function registerActions() {
-      var _this = this;
+      var _this2 = this;
 
       this.sails.log.debug('marlinspike (' + this.name + '): loading Controllers...');
       try {
@@ -116,7 +122,7 @@ var Marlinspike = (function () {
         _lodash2['default'].forOwn(controllers, function (action, controllerName) {
           _lodash2['default'].forOwn(action, function (func, actionName) {
             if (typeof func === 'function') {
-              _this.sails.registerAction(func, (controllerName + '/' + actionName).toLowerCase(), true);
+              _this2.sails.registerAction(func, (controllerName + '/' + actionName).toLowerCase(), true);
             }
           });
         });
@@ -199,7 +205,7 @@ var Marlinspike = (function () {
   }, {
     key: 'createSailsHook',
     value: function createSailsHook(Hook) {
-      var _this2 = this;
+      var _this3 = this;
 
       return function (sails) {
         var hook = new Hook(sails);
@@ -211,7 +217,7 @@ var Marlinspike = (function () {
         }
 
         return {
-          name: _this2.name,
+          name: _this3.name,
           routes: hook.routes(),
           defaults: function defaults(overrides) {
             return _lodash2['default'].merge(config, hook.defaults(overrides));
